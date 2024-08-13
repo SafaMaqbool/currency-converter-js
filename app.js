@@ -57,8 +57,12 @@ btn.addEventListener("click", async(evt)=>{
     console.log(response)
     let data = await response.json()
     console.log(data);
-    // let rate=data[toCurrency.value.toLowerCase()];
-    // console.log(rate);
+    let conversionRates=data.conversion_rates;
+    console.log(conversionRates)
+    // let fromRate=data.conversionRates[]
+    // let toRate=data.conversionRates[toCurrencyCode];
+    // console.log(fromRate)
+    // console.log(toRate)
 
     // let finalAmount=rate *amount_value;
     // msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value}`
