@@ -59,13 +59,29 @@ btn.addEventListener("click", async(evt)=>{
     console.log(data);
     let conversionRates=data.conversion_rates;
     console.log(conversionRates)
-    // let fromRate=data.conversionRates[]
-    // let toRate=data.conversionRates[toCurrencyCode];
+    // let fromRate=data.conversion_rates[fromCurrency.value]
     // console.log(fromRate)
+    // let toRate=data.conversion_rates[toCurrencyCode.value];
+    
     // console.log(toRate)
+     const fromCurrencyCode = fromCurrency.value.toUpperCase();
+     const toCurrencyCode = toCurrency.value.toUpperCase();
 
-    // let finalAmount=rate *amount_value;
-    // msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value}`
+     console.log("From Currency Code:", fromCurrencyCode);
+     console.log("To Currency Code:", toCurrencyCode);
+             let fromRate = conversionRates[fromCurrencyCode];
+             let toRate = conversionRates[toCurrencyCode];
+
+             console.log("From Rate:", fromRate);
+             console.log("To Rate:", toRate);
+
+     
+
+    let rate = toRate / fromRate;
+    console.log(rate)
+    let finalAmount = rate * amount_value;
+   
+     msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value} * ${finalAmount}`
 
 })
 
