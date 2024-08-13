@@ -114,19 +114,13 @@ const calculateConversion = async (evt) => {
     }).format(num);
   };
 
-  const rate = toRate / fromRate;
-  const finalAmount = rate * amountValue;
+  const rate = formatNumber(toRate / fromRate);
+  const finalAmount = formatNumber(rate * amountValue);
 
   msg.innerHTML =
     amountValue === 1
-      ? `<span>${amountValue} ${fromCurrencyCode} = ${formatNumber(
-          finalAmount
-        )} ${toCurrencyCode}</span>`
-      : `<span>1 ${fromCurrencyCode} = ${formatNumber(
-          rate
-        )} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${formatNumber(
-          finalAmount
-        )} ${toCurrencyCode}</span>`;
+      ? `<span>${amountValue} ${fromCurrencyCode} = ${finalAmount} ${toCurrencyCode}</span>`
+      : `<span>1 ${fromCurrencyCode} = ${rate} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${finalAmount} ${toCurrencyCode}</span>`;
 
   msg.style.display = "block";
 };
