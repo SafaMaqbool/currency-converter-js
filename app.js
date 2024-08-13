@@ -1,87 +1,132 @@
-const BASE_URL =
-  "https://v6.exchangerate-api.com/v6/0366c0fcffd273a27a234593/latest/USD";
-  //api key= 0366c0fcffd273a27a234593
+const apiKey = "0366c0fcffd273a27a234593";
+const BASE_URL = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/`;
+const selectors = document.getElementsByTagName("select");
+const btn = document.querySelector("button");
+const fromCurrency = document.querySelector("#from");
+const toCurrency = document.querySelector("#to");
+const msg = document.querySelector("#msg");
 
- 
-const selectors=document.getElementsByTagName('select')
-const btn=document.querySelector('button')
-const fromCurrency=document.querySelector('#from')
-const toCurrency=document.querySelector('#to')
-const msg=document.querySelector('#msg')
+const populateCurrencyOptions = () => {
+  Array.from(selectors).forEach((select) => {
+    Object.keys(countryList).forEach((currencyCode) => {
+      const newOption = document.createElement("option");
+      newOption.value = currencyCode;
+      newOption.textContent = currencyCode;
+      if (select.name === "from" && currencyCode === "USD") {
+        newOption.selected = true;
+        fromCurrency.value = "USD";
+      } else if (select.name === "to" && currencyCode === "PKR") {
+        newOption.selected = true;
+        toCurrency.value = "PKR";
+      }
+      select.appendChild(newOption);
+    });
+    select.addEventListener("change", (evt) => {
+      updateFlag(evt.target);
+    });
+  });
+};
 
-// for (code in countryList) {
-//     console.log(code)
-// }
+const updateFlag = (element) => {
+  const currencyCode = element.value;
+  const countryCode = countryList[currencyCode];
+  const img = element.parentElement.querySelector("img");
+  img.alt = `${currencyCode} flag`;
+  img.src = `https://flagsapi.com/${countryCode}/flat/32.png`;
+};
 
-for (let select of selectors){
-    for(currencyCode in countryList){
-        let newOption=document.createElement('option');
-        newOption.innerText=currencyCode;
-        newOption.value=currencyCode;
-        if(select.name==="from" && currencyCode==="USD"){
-            newOption.selected="selected"
-        }
-        else if (select.name === "to" && currencyCode === "PKR"){ 
-          newOption.selected = "selected";
-        }
-        select.append(newOption)
-    }
-    select.addEventListener("change",(evt)=>{
-        updateFlag(evt.target)
-    })
-}
+const fetchConversionRates = async () => {
+  const fromCountry = fromCurrency.value;
+  const localStorageKey = `conversionRates_${fromCountry}`;
 
-const updateFlag=(element)=>{
-    // console.log(element)
-    let currencyCode= element.value;
-    let countryCode=countryList[currencyCode];
-    let newSrc = `https://flagsapi.com/${countryCode}/flat/32.png`;
-    let img=element.parentElement.querySelector('img')  //need to use element bec element se we are targetting
-    img.src=newSrc
+  const getStoredData = () => {
+    const storedData = localStorage.getItem(localStorageKey);
+    return storedData ? JSON.parse(storedData) : null;
+  };
 
-}
+  const isDataStale = (nextUpdate) => {
+    return Date.now() >= nextUpdate * 1000;
+  };
 
-btn.addEventListener("click", async(evt)=>{
-    evt.preventDefault();
-    let amount = document.querySelector('form input')
-    let amount_value = amount.value
-    // console.log(amount_value)
-    if(amount_value===""||amount_value<1){
-        amount_value=1;
-        amount.value="1";
-    }
-    // console.log(fromCurrency.value,toCurrency.value)
-    // const URL=`${BASE_URL}/${fromCurrency.value.toLowerCase()}/${toCurrency.value.toLowerCase()}`;
-    // console.log("Constructed URL:", URL);
-    let response = await fetch(BASE_URL)
-    console.log(response)
-    let data = await response.json()
-    console.log(data);
-    let conversionRates=data.conversion_rates;
-    console.log(conversionRates)
-    // let fromRate=data.conversion_rates[fromCurrency.value]
-    // console.log(fromRate)
-    // let toRate=data.conversion_rates[toCurrencyCode.value];
-    
-    // console.log(toRate)
-     const fromCurrencyCode = fromCurrency.value.toUpperCase();
-     const toCurrencyCode = toCurrency.value.toUpperCase();
+  const storeData = (data) => {
+    const storageObject = {
+      base_currency: data.base_code,
+      next_update: data.time_next_update_unix,
+      conversion_rates: data.conversion_rates,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(localStorageKey, JSON.stringify(storageObject));
+  };
 
-     console.log("From Currency Code:", fromCurrencyCode);
-     console.log("To Currency Code:", toCurrencyCode);
-             let fromRate = conversionRates[fromCurrencyCode];
-             let toRate = conversionRates[toCurrencyCode];
+  const storedData = getStoredData();
+  if (storedData && !isDataStale(storedData.next_update)) {
+    return storedData.conversion_rates;
+  }
 
-             console.log("From Rate:", fromRate);
-             console.log("To Rate:", toRate);
+  localStorage.removeItem(localStorageKey);
 
-     
+  try {
+    const response = await fetch(`${BASE_URL}${fromCountry}`);
+    if (!response.ok) throw new Error("Network response was not ok");
+    const data = await response.json();
+    storeData(data);
+    return data.conversion_rates;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    msg.textContent =
+      "Failed to fetch conversion rates. Please try again later.";
+    msg.style.display = "block";
+    return null;
+  }
+};
 
-    let rate = toRate / fromRate;
-    console.log(rate)
-    let finalAmount = rate * amount_value;
-   
-     msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value} ${finalAmount}`
+const calculateConversion = async (evt) => {
+  evt.preventDefault();
 
-})
+  if (fromCurrency.value === toCurrency.value) {
+    msg.innerHTML = `<span class="text-red-500">The selected currencies are the same. <br/> Please select different currencies.</span>`;
+    msg.style.display = "block";
+    return;
+  }
 
+  const amountInput = document.querySelector("form input");
+  let amountValue = parseFloat(amountInput.value) || 1;
+  amountInput.value = amountValue;
+
+  const conversionRates = await fetchConversionRates();
+  if (!conversionRates) return;
+
+  const fromCurrencyCode = fromCurrency.value.toUpperCase();
+  const toCurrencyCode = toCurrency.value.toUpperCase();
+  const fromRate = conversionRates[fromCurrencyCode];
+  const toRate = conversionRates[toCurrencyCode];
+
+  if (toRate === undefined || fromRate === undefined) {
+    msg.innerHTML = `<span class="text-red-500">Conversion rate not available for the selected currencies. <br/> Please try again later.</span>`;
+    msg.style.display = "block";
+    return;
+  }
+
+  const rate = toRate / fromRate;
+  const finalAmount = rate * amountValue;
+
+  msg.innerHTML =
+    amountValue === 1
+      ? `<span>${amountValue} ${fromCurrencyCode} = ${finalAmount.toFixed(
+          2
+        )} ${toCurrencyCode}</span>`
+      : `<span>1 ${fromCurrencyCode} = ${rate.toFixed(
+          2
+        )} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${finalAmount.toFixed(
+          4
+        )} ${toCurrencyCode}</span>`;
+
+  msg.style.display = "block";
+};
+
+const init = () => {
+  populateCurrencyOptions();
+  btn.addEventListener("click", calculateConversion);
+};
+
+init();
