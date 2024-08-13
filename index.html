@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 class="text-3xl font-bold mb-6 text-center">Currency Converter</h2>
+        <form action="" class="space-y-4">
+            <div class="flex flex-col">
+                <label for="amount" class="text-lg font-medium">Enter Amount</label>
+                <input type="text" id="amount" placeholder="Enter Amount" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col w-1/2 pr-2">
+                    <label for="from" class="text-lg font-medium">From</label>
+                    <div class="flex items-center mt-1">
+                        <img src="https://flagsapi.com/US/flat/32.png" alt="US Flag" class="mr-2">
+                        <select name="from" id="from" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <!-- <option value="USD">USD</option>
+                            <option value="PKR">PKR</option>
+                            <option value="EUR">EUR</option>
+                            <option value="AUD">AUD</option> -->
+                        </select>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right-arrow-left text-2xl mx-4"></i>
+                <div class="flex flex-col w-1/2 pl-2">
+                    <label for="to" class="text-lg font-medium">To</label>
+                    <div class="flex items-center mt-1">
+                        <img src="https://flagsapi.com/PK/flat/32.png" alt="PK Flag" class="mr-2">
+                        <select name="to" id="to" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <!-- <option value="USD">USD</option>
+                            <option value="PKR" selected>PKR</option>
+                            <option value="EUR">EUR</option>
+                            <option value="AUD">AUD</option> -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-gray-600 font-semibold" id="msg">1 USD = 280 PKR</div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full">Get Exchange Rate</button>
+        </form>
+    </div>
+</body>
+<script src="codes.js"></script>
+<script src="app.js"></script>
+</html>
