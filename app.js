@@ -107,18 +107,25 @@ const calculateConversion = async (evt) => {
     return;
   }
 
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4,
+    }).format(num);
+  };
+
   const rate = toRate / fromRate;
   const finalAmount = rate * amountValue;
 
   msg.innerHTML =
     amountValue === 1
-      ? `<span>${amountValue} ${fromCurrencyCode} = ${finalAmount.toFixed(
-          2
+      ? `<span>${amountValue} ${fromCurrencyCode} = ${formatNumber(
+          finalAmount
         )} ${toCurrencyCode}</span>`
-      : `<span>1 ${fromCurrencyCode} = ${rate.toFixed(
-          2
-        )} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${finalAmount.toFixed(
-          4
+      : `<span>1 ${fromCurrencyCode} = ${formatNumber(
+          rate
+        )} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${formatNumber(
+          finalAmount
         )} ${toCurrencyCode}</span>`;
 
   msg.style.display = "block";
