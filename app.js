@@ -81,7 +81,7 @@ btn.addEventListener("click", async(evt)=>{
     console.log(rate)
     let finalAmount = rate * amount_value;
    
-     msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value} * ${finalAmount}`
+     msg.innerText=`${amount_value} ${fromCurrency.value} = ${toCurrency.value} ${finalAmount}`
 
 })
 
