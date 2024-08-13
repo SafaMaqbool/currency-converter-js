@@ -5,6 +5,16 @@ const btn = document.querySelector("button");
 const fromCurrency = document.querySelector("#from");
 const toCurrency = document.querySelector("#to");
 const msg = document.querySelector("#msg");
+const swap = document.querySelector("#swap");
+
+swap.addEventListener("click", () => {
+  const temp = fromCurrency.value;
+  fromCurrency.value = toCurrency.value;
+  toCurrency.value = temp;
+  updateFlag(fromCurrency);
+  updateFlag(toCurrency);
+  calculateConversion(new Event("submit"));
+});
 
 const populateCurrencyOptions = () => {
   Array.from(selectors).forEach((select) => {
