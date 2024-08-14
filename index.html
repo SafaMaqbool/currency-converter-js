@@ -1,52 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Currency Converter</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 class="text-3xl font-bold mb-6 text-center">Currency Converter</h2>
-        <form action="" class="space-y-4">
-            <div class="flex flex-col">
-                <label for="amount" class="text-lg font-medium">Enter Amount</label>
-                <input type="text" id="amount" placeholder="Enter Amount" class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+    <script async defer src="codes.js"></script>
+    <script async defer src="app.js"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+      <h2 class="text-4xl font-bold uppercase text-center">
+        Currency Converter
+      </h2>
+      <form action="" class="space-y-7 mt-12 select-none">
+        <div class="flex flex-col">
+          <label for="amount" class="text-lg font-medium">Enter Amount</label>
+          <input
+            type="text"
+            id="amount"
+            placeholder="Enter Amount"
+            class="border border-gray-300 rounded-lg p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div class="grid grid-cols-3 items-center justify-between">
+          <div class="flex flex-col">
+            <div class="flex items-center select-none gap-2">
+              <img src="https://flagsapi.com/US/flat/32.png" alt="US Flag" />
+              <select
+                name="from"
+                id="from"
+                value="USD"
+                class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              ></select>
             </div>
-            <div class="flex items-center justify-between">
-                <div class="flex flex-col w-1/2 pr-2">
-                    <label for="from" class="text-lg font-medium">From</label>
-                    <div class="flex items-center mt-1">
-                        <img src="https://flagsapi.com/US/flat/32.png" alt="US Flag" class="mr-2">
-                        <select name="from" id="from" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <!-- <option value="USD">USD</option>
-                            <option value="PKR">PKR</option>
-                            <option value="EUR">EUR</option>
-                            <option value="AUD">AUD</option> -->
-                        </select>
-                    </div>
-                </div>
-                <i class="fa-solid fa-arrow-right-arrow-left text-2xl mx-4"></i>
-                <div class="flex flex-col w-1/2 pl-2">
-                    <label for="to" class="text-lg font-medium">To</label>
-                    <div class="flex items-center mt-1">
-                        <img src="https://flagsapi.com/PK/flat/32.png" alt="PK Flag" class="mr-2">
-                        <select name="to" id="to" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <!-- <option value="USD">USD</option>
-                            <option value="PKR" selected>PKR</option>
-                            <option value="EUR">EUR</option>
-                            <option value="AUD">AUD</option> -->
-                        </select>
-                    </div>
-                </div>
+          </div>
+
+          <div class="flex items-center w-full justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 128 128"
+              xml:space="preserve"
+              class="w-8 hover:cursor-pointer"
+              title="Swap Currency"
+              aria-label="Swap Currency"
+              aria-labelledby="swap"
+              id="swap"
+            >
+              <path
+                d="M33.8 53.3 30 49.5-.1 79.7 30 109.9l3.8-3.8L10 82.3h63.2v-5.2H10l23.8-23.8zm94.1-5.1L97.8 18.1 94 21.9l23.8 23.8h-63v5.2h63L94.1 74.8l3.8 3.8L128 48.5v-.3h-.1z"
+              />
+            </svg>
+          </div>
+
+          <div class="flex justify-end w-full">
+            <div class="flex items-center select-none gap-2">
+              <img src="https://flagsapi.com/PK/flat/32.png" alt="PK Flag" />
+              <select
+                name="to"
+                id="to"
+                value="PKR"
+                class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              ></select>
             </div>
-            <div class="text-center text-gray-600 font-semibold" id="msg">1 USD = 280 PKR</div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full">Get Exchange Rate</button>
-        </form>
+          </div>
+        </div>
+
+        <div id="msg" class="text-center hidden select"></div>
+
+        <button
+          type="submit"
+          id="btn"
+          class="bg-blue-500 hover:bg-blue-700 select-none text-white font-bold py-2 px-4 rounded-lg w-full"
+        >
+          Get Exchange Rate
+        </button>
+      </form>
     </div>
-</body>
-<script src="codes.js"></script>
-<script src="app.js"></script>
+  </body>
 </html>
