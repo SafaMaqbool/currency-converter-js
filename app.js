@@ -7,14 +7,13 @@ const toCurrency = document.querySelector("#to");
 const msg = document.querySelector("#msg");
 const swap = document.querySelector("#swap");
 
-swap.addEventListener("click", () => {
-  const temp = fromCurrency.value;
-  fromCurrency.value = toCurrency.value;
-  toCurrency.value = temp;
-  updateFlag(fromCurrency);
-  updateFlag(toCurrency);
-  calculateConversion(new Event("submit"));
-});
+const setUrl = () => {
+  const url = new URL(window.location.href);
+  url.searchParams.set("from", fromCurrency.value);
+  url.searchParams.set("to", toCurrency.value);
+  url.searchParams.set("amount", document.querySelector("form input").value);
+  window.history.pushState({}, "", url);
+};
 
 const populateCurrencyOptions = () => {
   Array.from(selectors).forEach((select) => {
@@ -30,9 +29,6 @@ const populateCurrencyOptions = () => {
         toCurrency.value = "PKR";
       }
       select.appendChild(newOption);
-    });
-    select.addEventListener("change", (evt) => {
-      updateFlag(evt.target);
     });
   });
 };
@@ -133,11 +129,45 @@ const calculateConversion = async (evt) => {
       : `<span>1 ${fromCurrencyCode} = ${rate} ${toCurrencyCode}</span> <br/> <span>${amountValue} ${fromCurrencyCode} = ${finalAmount} ${toCurrencyCode}</span>`;
 
   msg.style.display = "block";
+  setUrl();
 };
 
-const init = () => {
+swap.addEventListener("click", () => {
+  const temp = fromCurrency.value;
+  fromCurrency.value = toCurrency.value;
+  toCurrency.value = temp;
+  updateFlag(fromCurrency);
+  updateFlag(toCurrency);
+  calculateConversion(new Event("submit"));
+});
+
+const initializePage = async () => {
   populateCurrencyOptions();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const from = urlParams.get("from");
+  const to = urlParams.get("to");
+  const amount = urlParams.get("amount") || 1;
+  if (from && to) {
+    fromCurrency.value = from;
+    toCurrency.value = to;
+    document.querySelector("form input").value = amount;
+  }
+
+  updateFlag(fromCurrency);
+  updateFlag(toCurrency);
+
+  await calculateConversion(new Event("submit"));
+
+  Array.from(selectors).forEach((select) => {
+    select.addEventListener("change", async (evt) => {
+      updateFlag(evt.target);
+      setUrl();
+      await calculateConversion(new Event("submit"));
+    });
+  });
+
   btn.addEventListener("click", calculateConversion);
 };
 
-init();
+initializePage();
